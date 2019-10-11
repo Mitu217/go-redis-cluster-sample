@@ -1,0 +1,17 @@
+version: "3.4"
+
+services:
+  redis:
+    container_name: redis-cluster
+    build:
+      context: ./docker/redis-cluster
+      dockerfile: Dockerfile
+    environment:
+      - CLUSTER_ANNOUNCE_IP=127.0.0.1
+    ports:
+      - "127.0.0.1:7000:7000"
+      - "127.0.0.1:7001:7001"
+      - "127.0.0.1:7002:7002"
+      - "127.0.0.1:7003:7003"
+      - "127.0.0.1:7004:7004"
+      - "127.0.0.1:7005:7005"
