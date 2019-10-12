@@ -23,7 +23,8 @@ func BenchmarkSerialGetSet(b *B) {
 		if err != nil {
 			b.Fatal(err)
 		}
-
+		defer cli.Close()
+		
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			if err := cli.SetGet(key, val); err != nil {
@@ -37,6 +38,7 @@ func BenchmarkSerialGetSet(b *B) {
 		if err != nil {
 			b.Fatal(err)
 		}
+		defer cli.Close()
 
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
@@ -61,6 +63,7 @@ func BenchmarkSerialGetSetLargeArgs(b *B) {
 		if err != nil {
 			b.Fatal(err)
 		}
+		defer cli.Close()
 
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
@@ -75,6 +78,7 @@ func BenchmarkSerialGetSetLargeArgs(b *B) {
 		if err != nil {
 			b.Fatal(err)
 		}
+		defer cli.Close()
 
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
@@ -113,6 +117,8 @@ func BenchmarkParallelGetSet(b *B) {
 		if err != nil {
 			b.Fatal(err)
 		}
+		defer cli.Close()
+
 		do(b, func() error {
 			return cli.SetGet(key, val)
 		})
@@ -123,6 +129,8 @@ func BenchmarkParallelGetSet(b *B) {
 		if err != nil {
 			b.Fatal(err)
 		}
+		defer cli.Close()
+
 		do(b, func() error {
 			return cli.SetGet(key, val)
 		})
