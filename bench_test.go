@@ -85,3 +85,46 @@ func BenchmarkSerialGetSetLargeArgs(b *B) {
 	})
 }
 
+func BenchmarkParallelGetSet(b *B) {
+	parallel := runtime.GOMAXPROCS(0)
+
+	do := func(b *B, fn func() error) {
+		b.ResetTimer()
+		b.SetParallelism(parallel)
+		b.RunParallel(func(pb *PB) {
+			for pb.Next() {
+				if err := fn(); err != nil {
+					b.Fatal(err)
+				}
+			}
+		})
+	}
+
+	key := "foo"
+	val := "bar"
+	hosts := []string{
+		"127.0.0.1:7000",
+		"127.0.0.1:7001",
+		"127.0.0.1:7002",
+	}
+
+	b.Run("radix", func(b *B) {
+		cli, err := radix.NewRadixClient(hosts)
+		if err != nil {
+			b.Fatal(err)
+		}
+		do(b, func() error {
+			return cli.SetGet(key, val)
+		})
+	})
+
+	b.Run("goredis", func(b *B) {
+		cli, err := goredis.NewGoRedisClient(hosts)
+		if err != nil {
+			b.Fatal(err)
+		}
+		do(b, func() error {
+			return cli.SetGet(key, val)
+		})
+	})
+}
