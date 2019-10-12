@@ -14,6 +14,9 @@ func NewGoRedisClient(addrs []string) (*GoRedisClient, error) {
 	cli := redis.NewClusterClient(&redis.ClusterOptions{
 		Addrs: addrs,
 	})
+	if err := cli.Ping().Err(); err != nil {
+		return nil, err
+	}
 	return &GoRedisClient{cli}, nil
 }
 

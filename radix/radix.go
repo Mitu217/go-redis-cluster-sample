@@ -15,6 +15,9 @@ func NewRadixClient(hosts []string) (*RadixClient, error) {
 	if err != nil {
 		return nil, err
 	}
+	if err := cluster.Do(radix.Cmd(nil, "PING")); err != nil {
+		return nil, err
+	}
 	return &RadixClient{cluster}, nil
 }
 
